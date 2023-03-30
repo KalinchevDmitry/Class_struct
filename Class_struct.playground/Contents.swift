@@ -4,106 +4,112 @@ import UIKit
 
 class TV {
     var markaAndModel:(String, String)
-    // var marka: String
-    // var model: String
     var defaultChannal: TVChannal
-    var power: Bool
-   // var volume: Double
+    var isPower: Bool
     
-    
-    
-    init (markaAndModel:(String, String),/* marka: String, model: String, */ defaultChannal: TVChannal, power: Bool) {
-        //self.marka = marka
-        //self.model = model
+    init (markaAndModel:(String, String), defaultChannal: TVChannal, isPower: Bool) {
         self.defaultChannal = defaultChannal
-        self.power = power
+        self.isPower = isPower
         self.markaAndModel = markaAndModel
+    }
+    
+    
+    func showTVNow() {
+        
+        print("You are watch on \(markaAndModel.0)_\(markaAndModel.1): \(defaultChannal.rawValue)")
+        
+    }
+    
+    func changeChannal (channal: TVChannal) {
+        
+        switch channal {
+        case .ort:
+            defaultChannal = .ort
+        case .russia:
+            defaultChannal = .russia
+        case .ntv:
+            defaultChannal = .ntv
+        case .tnt:
+            defaultChannal = .tnt
+        case .matchTV:
+            defaultChannal = .matchTV
+        case .extreme:
+            defaultChannal = .extreme
+        }
     }
     
 }
 
 enum TVChannal: String {
-    case ort
-    case russia
-    case ntv
-    case tnt
-    case matchTV
-    case extreme
+    case ort = "Now you view ORT"
+    case russia = "Now you view Russia"
+    case ntv = "Now you view NTV"
+    case tnt = "Now you view TNT"
+    case matchTV = "Now you view MatchTV"
+    case extreme = "Now you view Extreme"
 }
 
+var programm = TV(markaAndModel: ("Samsung","Tr32FF55"), defaultChannal: .russia, isPower: false)
 
 
+programm.isPower = true
 
-var programm = TV(markaAndModel: ("Samsung","Tr32FF55"),/* marka: "Philips", model: "QWWE", */defaultChannal: .ort, power: false)
+if programm.isPower == true {
+    programm.showTVNow()
+    print("Change chanal")
+    programm.changeChannal(channal: .matchTV)
+    programm.showTVNow()
+} else { print("TV \(programm.markaAndModel.0)_\(programm.markaAndModel.1) power OFF") }
 
-// var currentChannal = TVChannal.tnt
-
-programm.power = true
-
-//print("Now power: ",programm.power)
-
-print("Default channal when power on:", programm.defaultChannal)
-
-func changeChannal (channal: TVChannal) {
-    if programm.power == true {
-        switch channal {
-        case .ort:
-            print("On TV",programm.markaAndModel.0, "Now you view ORT")
-        case .russia:
-            print("Now you view Russia")
-        case .ntv:
-            print("Now you view NTV")
-        case .tnt:
-            print("Now you view TNT")
-        case .matchTV:
-            print("Now you view MatchTV")
-        case .extreme:
-            print("Now you view Extreme")
-        }
-    } else { print("TV power OFF") }
-}
-
-changeChannal(channal: .ort)
-print("Change chanal")
-changeChannal(channal: .extreme)
-print(programm.markaAndModel.0)
 
 
 // Task 2
 //
 struct Setting {
     var color: Bool
-    var volume: Double
-}
-
-var setting = Setting(color: false, volume: 0.5)
-
-if setting.color == true {
-    print("TV color")
-} else { print("TV black/white") }
-
-class TVNew: TV {
-    private var setting = Setting(color: false, volume: 0)
-    var maxVolume:Double = 1
-    willSet {
-        if newValue > maxVolume{
-            self.
+    static var volumeMin: Double = 0.0
+    static var volumeMax: Double = 1.0
+    var volume: Double {
+        didSet {
+            if volume < Setting.volumeMin {
+                volume = Setting.volumeMin
+                print ("Volume Min")
+            } else if volume > Setting.volumeMax {
+                volume = Setting.volumeMax
+                print("Volume Max")
+            }
+            print("Volume - \(volume)")
         }
     }
-        }
+}
 
+
+class TVKitchen: TV {
+    
+    var setting: Setting = .init(color: false, volume: 0.5)
+    
+    override func showTVNow() {
+        print("You are watch on \(markaAndModel.0)_\(markaAndModel.1):\(defaultChannal.self) on volume \(tvKitchen.setting.volume) and color \(tvKitchen.setting.color)")
+    }
+}
+var tvKitchen = TVKitchen(markaAndModel: ("Philips","Tywec8833"), defaultChannal: .tnt, isPower: false)
+//
+//if tvKitchen.setting.color == true {
+//    print("TV \(tvKitchen.markaAndModel.0) color")
+//} else { print("TV \(tvKitchen.markaAndModel) black/white") }
+
+tvKitchen.isPower = false
+
+if tvKitchen.isPower == true {
+    
+    tvKitchen.showTVNow()
+    tvKitchen.isPower = true
+    tvKitchen.changeChannal(channal: .ort)
+} else { print ("TV \(tvKitchen.markaAndModel.0)_\(tvKitchen.markaAndModel.1) power OFF") }
 
 enum Volume: Double {
     case min = 0.0
     case middle = 0.5
     case max = 1.0
 }
-//
-//
-//struct TotalVolume {
-//    let volume: TVVolume
-//
-//}
-//
-//let qwe = TVVolume(volume: 0.4)
-//
+
